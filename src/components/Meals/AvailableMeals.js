@@ -7,13 +7,9 @@ const AvailableMeals = () => {
   const [fetchedMeals, setFetchedMeals] = useState([]);
   useEffect(() => {
     fetch(
-      "https://meal-ordering-app-1aa10-default-rtdb.firebaseio.com/",
-    {headers: {
-      'Content-Type': 'application/json',
-      'Access-Control-Allow-Origin': '*'
-    }})
+      "https://meal-ordering-app-1aa10-default-rtdb.firebaseio.com/meals.json")
       .then((res) => res.json())
-      .then((data) => console.log(data));
+      .then((data) => setFetchedMeals(data));
   }, []);
   const mealsList = fetchedMeals.map((meal) => (
     <MealItem
