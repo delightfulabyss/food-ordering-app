@@ -8,11 +8,26 @@ const AvailableMeals = () => {
   const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
-    fetch(
-      "https://meal-ordering-app-1aa10-default-rtdb.firebaseio.com/meals.json")
-      .then((res) => res.json())
-      .then((data) => setMeals(data));
-    setIsLoading(false);
+    const fetchMeals = async () => {
+      const response = await fetch(
+        "https://meal-ordering-app-1aa10-default-rtdb.firebaseio.com/meals.json"
+      );
+      const responseData = await response.json();
+      const loadedMeals = [];
+
+      for (const key in responseData) {
+        loadedMeals.push({
+          id: key,
+          name: responseData[key].name,
+          description: responseData[key].description,
+          price: responseData[key].price,
+        });
+      }
+
+      setMeals(loadedMeals)
+      setIsLoading(false);
+    };
+    fetchMeals();
   }, []);
 
   const mealsList = meals.map((meal) => (
@@ -24,7 +39,15 @@ const AvailableMeals = () => {
       price={meal.price}
     />
   ));
-  
+
+  if (isLoading) {
+    return (
+      <section>
+        <p>Loading meals...</p>
+      </section>
+    );
+  }
+
   return (
     <section className={classes.meals}>
       <Card>
