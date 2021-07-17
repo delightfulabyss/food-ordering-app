@@ -2,8 +2,12 @@ import { classes } from "istanbul-lib-coverage";
 import React from "react";
 
 const Checkout = (props) => {
+    const confirmHandler = (event) => {
+        event.preventDefault();
+    }
+
   return (
-    <form>
+    <form onSubmit={confirmHandler}>
       <div className={classes.control}>
         <label htmlFor="name">Your name</label>
         <input type="text" id="name"/>
