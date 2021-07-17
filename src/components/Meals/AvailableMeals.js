@@ -4,14 +4,14 @@ import Card from "../UI/Card";
 import MealItem from "./MealItem/MealItem";
 
 const AvailableMeals = () => {
-  const [fetchedMeals, setFetchedMeals] = useState([]);
+  const [meals, setMeals] = useState([]);
   useEffect(() => {
     fetch(
       "https://meal-ordering-app-1aa10-default-rtdb.firebaseio.com/meals.json")
       .then((res) => res.json())
-      .then((data) => setFetchedMeals(data));
+      .then((data) => setMeals(data));
   }, []);
-  const mealsList = fetchedMeals.map((meal) => (
+  const mealsList = meals.map((meal) => (
     <MealItem
       id={meal.id}
       key={meal.id}
