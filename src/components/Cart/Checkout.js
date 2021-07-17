@@ -1,4 +1,4 @@
-import { classes } from "istanbul-lib-coverage";
+import classes from "./Checkout.module.css"
 import React from "react";
 
 const Checkout = (props) => {
