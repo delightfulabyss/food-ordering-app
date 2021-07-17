@@ -5,12 +5,16 @@ import MealItem from "./MealItem/MealItem";
 
 const AvailableMeals = () => {
   const [meals, setMeals] = useState([]);
+  const [isLoading, setIsLoading] = useState(true);
+
   useEffect(() => {
     fetch(
       "https://meal-ordering-app-1aa10-default-rtdb.firebaseio.com/meals.json")
       .then((res) => res.json())
       .then((data) => setMeals(data));
+    setIsLoading(false);
   }, []);
+
   const mealsList = meals.map((meal) => (
     <MealItem
       id={meal.id}
@@ -20,6 +24,7 @@ const AvailableMeals = () => {
       price={meal.price}
     />
   ));
+  
   return (
     <section className={classes.meals}>
       <Card>
