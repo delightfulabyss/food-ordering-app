@@ -7,6 +7,8 @@ import Checkout from "./Checkout";
 
 const Cart = (props) => {
   const [isCheckingOut, setIsCheckingOut] = useState(false);
+  const [isSubmitting, setIsSubmitting] = useState(false);
+  const [didSubmit, setDidSubmit] = useState(false);
   const cartCTX = useContext(CartContext);
   const totalAmount = `$${cartCTX.totalAmount.toFixed(2)}`;
   const hasItems = cartCTX.items.length > 0;
@@ -21,6 +23,22 @@ const Cart = (props) => {
 
   const orderHandler = () => {
     setIsCheckingOut(true);
+  };
+
+  const submitOrderHandler = async (userData) => {
+    setIsSubmitting(true);
+    await fetch(
+      "https://meal-ordering-app-1aa10-default-rtdb.firebaseio.com/orders.json",
+      {
+        method: "POST",
+        body: JSON.stringify({
+          user: userData,
+          orderedItems: cartCTX.items,
+        }),
+      }
+    );
+    setIsSubmitting(false);
+    setDidSubmit(true);
   };
 
   const cartItems = (
@@ -50,17 +68,36 @@ const Cart = (props) => {
       )}
     </div>
   );
-  return (
-    <Modal onHideCart={props.onHideCart}>
+
+  const cartModalContent = (
+    <>
       {cartItems}
       <div className={classes.total}>
         <span>Total Amount</span>
         <span>{totalAmount}</span>
       </div>
-      {isCheckingOut && <Checkout onCancel={props.onHideCart}/>}
+      {isCheckingOut && (
+        <Checkout onConfirm={submitOrderHandler} onCancel={props.onHideCart} />
+      )}
       {!isCheckingOut && modalActions}
-    </Modal>
+    </>
   );
+
+  const isSubmittingModalContent = <p>Sending order data...</p>;
+
+  const didSubmitModalContent = <>
+  <p>Successfully sent the order! You will be contacted when your order is ready.</p>
+  <div className={classes.actions}>
+      <button className={classes.button} onClick={props.onHideCart}>
+        Close
+      </button>
+    </div>
+  </>;
+  return <Modal onHideCart={props.onHideCart}>
+    {!isSubmitting && !didSubmit && cartModalContent}
+    {isSubmitting && isSubmittingModalContent}
+    {!isSubmitting && didSubmit && didSubmitModalContent}
+  </Modal>;
 };
 
 export default Cart;
